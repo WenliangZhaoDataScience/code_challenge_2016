@@ -145,8 +145,8 @@ warehouse in this case.
 
 (3) To create table from thrift, need to turn on Hive server first and 
 require the following MySQL setting (can be done by calling from python 
-or manually in MySQL: "alter table SDS alter column IS_STOREDASSUBDIRECTORIES 
-set default  0;")
+or manually in MySQL: "**alter table SDS alter column IS_STOREDASSUBDIRECTORIES 
+set default  0;**")
 
 (4) Use the time-tag-tag-count (time now devided by year, month, day, hour, 
 minute) information after hadoop as source data; create an external table 
