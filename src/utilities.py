@@ -10,14 +10,7 @@ Created on Sun Nov  1 16:03:48 2015
 from itertools import permutations
 import re, string, json
 
-'''
-   function cleans tweet.
-   input: One string record from JASON
-   output: text of tweet, time of tweet, and flag indicating if the tweet contains unicode
-'''
-
-
-
+### function check if string is unicode.
 def is_unicode(s):
     try:
         s.decode('ascii')
@@ -26,9 +19,11 @@ def is_unicode(s):
     else:
         return False
 
+
 '''
     function taking a tweet record, clean all escapes, ignore unicode
     input: a tweet (line), a list of escapes (escapes) and a temporal list with ' '
+    output: text of tweet, time of tweet, and flag indicating if the tweet contains unicode
 '''   
 def tweets_cleaned_json(line, escapes, temp_list):
     json_dict = json.loads(line)
@@ -62,6 +57,8 @@ def clean_tag(tag):
         L = filter(lambda x: (x==None or x=='_'), L)
         return L
     return [tag]
+
+
 
 '''
     function maintains average degree of the hashtag graph.
