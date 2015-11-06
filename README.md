@@ -15,11 +15,27 @@ Documents
 
 0. Outline:
 -----------
-    I think about 3 strategies to obtain the average degree in this project. Here I define 2 parameters related to time and space complexity of this work, and all the strategies are considered based on these parameters. The first one is **active period**, determines how long we should consider on the active tweets (in original challenge it is 60s). The second one is **updating interval** (in original challenge it is 1s). 
+    I think about 3 strategies to obtain the average degree in this project. 
+Here I define 2 parameters related to time and space complexity of this work, 
+and all the strategies are considered based on these parameters. The first one 
+is **active period**, determines how long we should consider on the active 
+tweets (in original challenge it is 60s). The second one is 
+**updating interval** (in original challenge it is 1s). 
     
-    It is clear that longer active period makes larger amount of data, so that the memory limit needs to be considered. Longer updating interval means more chance to have same tag pairs(edge in the graph) during the interval. So that a simple sequential algorithm will have many
+    It is clear that longer active period makes larger amount of data, so that 
+the memory limit needs to be considered. Longer updating interval means more 
+chance to have same tag pairs(edge in the graph) during the interval. So that 
+a simple sequential algorithm will have many
 
-    In section 1, I will explain the **environment** and **dependencies** of the codes. In section 2, I will introduce a simple (but efficient) sequential algorithm exactly dealing with the original problem. In section 3, I will extend the algorithm by using hadoop. Consider longer interval, say more than 10 min or even several hours, MapReduce potentially works better than single core sequential methods. In section 4, I will use hive to build a data warehouse, and this work will potentially benefit huge amount data processing, day finding average degree with in 1 year and updating every month (due to time and computational limit I only finish data warehouse building for this work)     
+    In section 1, I will explain the **environment** and **dependencies** of 
+the codes. In section 2, I will introduce a simple (but efficient) sequential 
+algorithm exactly dealing with the original problem. In section 3, I will extend 
+the algorithm by using hadoop. Consider longer interval, say more than 10 min or 
+even several hours, MapReduce potentially works better than single core sequential 
+methods. In section 4, I will use hive to build a data warehouse, and this work 
+will potentially benefit huge amount data processing, day finding average degree 
+with in 1 year and updating every month (due to time and computational limit I 
+only finish data warehouse building for this work)     
     
 
 1. Environment and Dependencies
@@ -35,14 +51,40 @@ MySQL 5.7.9
 -------------------------------------
 (active period 60s, updating interval 1s)
 Main file: code_challenge.py
-Subfunctions (in utilities.py): tweets_cleaned,  clean_tag, average_degree (see a **flow map** below)
-(1) Write to ft1.txt and ft2.txt in **same loop**
-(2) **Tweets clean**: I cleaned symbols like: { \"}, {\/}, tailing {\}
-(3) **Tag clean**: a. empty tag (only #); b. duplicated # symbols in front (maybe cause by removing unicode or just typos) c. tag like {#_}, maybe caused by removing unicode; d. multiple tags recognized as single tag (e.g. because of forgotten spaces between tags, or cause by removing unicode);  
-(4)A small trick to avoid blank line in the edn of output: set a flag k=0. If k==0, write output directly, k=1; else write a "newline" first, and then write output. Save time for tracking the size of the file at the beginning.
-(5) **Store by vertex**: A **hash map** (dictionary, "tag_dict" in the code) storing all active vertex (v1, as key) whose edge>0, value is **another hash map**. Key of the second map is vertex (v2) connecting with (v1), and value is count of the forming edge by E(v1, v2) (notice that number of edges will be doubled by this way, because we count the edge on v1, and also on v2.
-(6) **Store by time**: A **deque** storing all active edges by second and element is again a **hash map** <key=v1, value=hash map<key=v2, value=count> > similar to (4) but only storing 1s data. (e.g. the first element will be all edges in the first seconds. The deque structure is actually can be normal queue. But because python queue ADT doesn't support checking first element without popping, we need deque in order to push at front (instead of back).
-(7) **Time order**: by observation, there is possibility that tweets in the "next second" come before the "current second" in streaming. Because of this, if we reach the next second, say second 61s, we will delete all information in second 1s; but when streaming continue and tweets in second 60s come again, we already lost the information of 1s. To overcome, in stead of store 60s in deque, we store 61s (called backup dict in utilities). During looping of the deque, I check if the current element is backup second, if so, store this sub-dictionary and add back after loop. This procedure can promise no information in 1s deleted when dealing with 61s; but it doesn't solve the issue of incomplete information about 60s when dealing with 61s. We will see later in **hadoop** section, a simple way may be just parallel process the input and sort them. But this depends on the purpose of application. Here we just assume our target is to update every second as soon as we get records from streaming.  
+Subfunctions (in utilities.py): tweets_cleaned,  clean_tag, 
+average_degree (see a **flow map** below)
+    (1) Write to ft1.txt and ft2.txt in **same loop**
+    (2) **Tweets clean**: I cleaned symbols like: { \"}, {\/}, tailing {\}
+    (3) **Tag clean**: a. empty tag (only #); b. duplicated # symbols in 
+front (maybe cause by removing unicode or just typos) c. tag like {#_}, maybe 
+caused by removing unicode; d. multiple tags recognized as single tag (e.g. 
+because of forgotten spaces between tags, or cause by removing unicode);  
+    (4)A small trick to avoid blank line in the edn of output: set a flag k=0. 
+If k==0, write output directly, k=1; else write a "newline" first, and then 
+write output. Save time for tracking the size of the file at the beginning.
+    (5) **Store by vertex**: A **hash map** (dictionary, "tag_dict" in the code) 
+storing all active vertex (v1, as key) whose edge>0, value is **another hash map**. 
+Key of the second map is vertex (v2) connecting with (v1), and value is count of 
+the forming edge by E(v1, v2) (notice that number of edges will be doubled by this 
+way, because we count the edge on v1, and also on v2.
+    (6) **Store by time**: A **deque** storing all active edges by second and element 
+is again a **hash map** <key=v1, value=hash map<key=v2, value=count> > similar to (4) 
+but only storing 1s data. (e.g. the first element will be all edges in the first 
+seconds. The deque structure is actually can be normal queue. But because python 
+queue ADT doesn't support checking first element without popping, we need deque 
+in order to push at front (instead of back).
+    (7) **Time order**: by observation, there is possibility that tweets in the "next 
+second" come before the "current second" in streaming. Because of this, if we reach 
+the next second, say second 61s, we will delete all information in second 1s; but when 
+streaming continue and tweets in second 60s come again, we already lost the information 
+of 1s. To overcome, in stead of store 60s in deque, we store 61s (called backup dict 
+in utilities). During looping of the deque, I check if the current element is backup 
+second, if so, store this sub-dictionary and add back after loop. This procedure can 
+promise no information in 1s deleted when dealing with 61s; but it doesn't solve the 
+issue of incomplete information about 60s when dealing with 61s. We will see later 
+in **hadoop** section, a simple way may be just parallel process the input and sort 
+them. But this depends on the purpose of application. Here we just assume our target 
+is to update every second as soon as we get records from streaming.  
 
 check result: tweet_output/ft1.txt, tweet_output/ft2.txt
 
