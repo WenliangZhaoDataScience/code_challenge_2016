@@ -128,7 +128,7 @@ And because tweets in 1 hour can be very large, hadoop map-reduce can
 improve the performance.
 
 **check result**: tweet_output/ft1_hadoop.txt, tweet_output/unicode_count.txt 
-** (we tested 7 minutes data, but in theory larger dataset would perform better) **
+**we tested 7 minutes data, but in theory larger dataset would perform better**
 (for simplisity, we separate output1 to pure tweets and count), 
 tweet_output/ft2_hadoop.txt
 
