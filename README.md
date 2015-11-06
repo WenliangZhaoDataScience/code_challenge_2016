@@ -3,7 +3,7 @@ Insight Data Engineering Coding Challenge!
 
 Wenliang Zhao
 MS in CS at 
-Courant Institute of Mathematical Sciences, 
+Courant Institute of Mathematical Sciences 
 New York University
 zhaowenliangpolyu@gmail.com
 
