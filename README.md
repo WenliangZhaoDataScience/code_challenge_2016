@@ -55,7 +55,7 @@ Subfunctions (in utilities.py): tweets_cleaned,  clean_tag,
 average_degree (see a **flow map** below)
 (1) Write to ft1.txt and ft2.txt in **same loop**
 
-(2) **Tweets clean**: I cleaned symbols like: { \"}, {\/}, tailing {\}
+(2) **Tweets clean**: clean all unicode, substitute all escapes
     
 (3) **Tag clean**: a. empty tag (only #); b. duplicated # symbols in 
 front (maybe cause by removing unicode or just typos) c. tag like {#_}, maybe 
@@ -95,7 +95,6 @@ is to update every second as soon as we get records from streaming.
 **check result**: tweet_output/ft1.txt, tweet_output/ft2.txt
 
 ![GitHub Logo](/images/flow_map.png)
-
 
 
 3. Hadoop
