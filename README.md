@@ -44,9 +44,13 @@ only finish data warehouse building for this work)
 1. Environment and Dependencies
 -------------------------------
 Mac OS 10.9.2 (64 bit)
+
 Pyhton 2.7 (in Anaconda 2.3.0)
+
 Hadoop 1.2.1
+
 Hive 0.9.0 (with pyhs and python for thrift)
+
 MySQL 5.7.9
 
 
