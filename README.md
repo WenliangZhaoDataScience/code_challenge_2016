@@ -15,19 +15,19 @@ Documents
 
 0. Outline:
 -----------
-    I think about 3 strategies to obtain the average degree in this project. 
+I think about 3 strategies to obtain the average degree in this project. 
 Here I define 2 parameters related to time and space complexity of this work, 
 and all the strategies are considered based on these parameters. The first one 
 is **active period**, determines how long we should consider on the active 
 tweets (in original challenge it is 60s). The second one is 
 **updating interval** (in original challenge it is 1s). 
     
-    It is clear that longer active period makes larger amount of data, so that 
+It is clear that longer active period makes larger amount of data, so that 
 the memory limit needs to be considered. Longer updating interval means more 
 chance to have same tag pairs(edge in the graph) during the interval. So that 
 a simple sequential algorithm will have many
 
-    In section 1, I will explain the **environment** and **dependencies** of 
+In section 1, I will explain the **environment** and **dependencies** of 
 the codes. In section 2, I will introduce a simple (but efficient) sequential 
 algorithm exactly dealing with the original problem. In section 3, I will extend 
 the algorithm by using hadoop. Consider longer interval, say more than 10 min or 
