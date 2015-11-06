@@ -95,7 +95,7 @@ is to update every second as soon as we get records from streaming.
 check result: tweet_output/ft1.txt, tweet_output/ft2.txt
 
 ![GitHub Logo](/images/flow_map.png)
-Format: ![Alt Text](url)
+
 
 
 3. Hadoop
