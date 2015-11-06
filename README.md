@@ -139,6 +139,8 @@ interval = 1 month, it even may not be possible to store a complete hash
 map for all vertex in a main function. We consider **Hive** to build data 
 warehouse in this case. 
 
+** Make sure Hive server is open for this step **
+
 (1) Use python-thrift to remote connect the Hive server 
 
 (2) MySQL as metastore database
