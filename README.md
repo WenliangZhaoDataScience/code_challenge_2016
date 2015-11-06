@@ -53,33 +53,33 @@ MySQL 5.7.9
 Main file: code_challenge.py
 Subfunctions (in utilities.py): tweets_cleaned,  clean_tag, 
 average_degree (see a **flow map** below)
-    (1) Write to ft1.txt and ft2.txt in **same loop**
+(1) Write to ft1.txt and ft2.txt in **same loop**
 
-    (2) **Tweets clean**: I cleaned symbols like: { \"}, {\/}, tailing {\}
+(2) **Tweets clean**: I cleaned symbols like: { \"}, {\/}, tailing {\}
     
-    (3) **Tag clean**: a. empty tag (only #); b. duplicated # symbols in 
+(3) **Tag clean**: a. empty tag (only #); b. duplicated # symbols in 
 front (maybe cause by removing unicode or just typos) c. tag like {#_}, maybe 
 caused by removing unicode; d. multiple tags recognized as single tag (e.g. 
 because of forgotten spaces between tags, or cause by removing unicode)  
 
-    (4)A small trick to avoid blank line in the edn of output: set a flag k=0. 
+(4)A small trick to avoid blank line in the edn of output: set a flag k=0. 
 If k==0, write output directly, k=1; else write a "newline" first, and then 
 write output. Save time for tracking the size of the file at the beginning.
 
-    (5) **Store by vertex**: A **hash map** (dictionary, "tag_dict" in the code) 
+(5) **Store by vertex**: A **hash map** (dictionary, "tag_dict" in the code) 
 storing all active vertex (v1, as key) whose edge>0, value is **another hash map**. 
 Key of the second map is vertex (v2) connecting with (v1), and value is count of 
 the forming edge by E(v1, v2) (notice that number of edges will be doubled by this 
 way, because we count the edge on v1, and also on v2.
 
-    (6) **Store by time**: A **deque** storing all active edges by second and element 
+(6) **Store by time**: A **deque** storing all active edges by second and element 
 is again a **hash map** <key=v1, value=hash map<key=v2, value=count> > similar to (4) 
 but only storing 1s data. (e.g. the first element will be all edges in the first 
 seconds. The deque structure is actually can be normal queue. But because python 
 queue ADT doesn't support checking first element without popping, we need deque 
 in order to push at front (instead of back).
 
-    (7) **Time order**: by observation, there is possibility that tweets in the "next 
+(7) **Time order**: by observation, there is possibility that tweets in the "next 
 second" come before the "current second" in streaming. Because of this, if we reach 
 the next second, say second 61s, we will delete all information in second 1s; but when 
 streaming continue and tweets in second 60s come again, we already lost the information 
@@ -92,7 +92,7 @@ in **hadoop** section, a simple way may be just parallel process the input and s
 them. But this depends on the purpose of application. Here we just assume our target 
 is to update every second as soon as we get records from streaming.  
 
-check result: tweet_output/ft1.txt, tweet_output/ft2.txt
+**check result**: tweet_output/ft1.txt, tweet_output/ft2.txt
 
 ![GitHub Logo](/images/flow_map.png)
 
@@ -125,7 +125,7 @@ when the information of the next hour arrives, we update to the next hour.
 And because tweets in 1 hour can be very large, hadoop map-reduce can 
 improve the performance.
 
-check result: tweet_output/ft1_hadoop.txt, tweet_output/unicode_count.txt 
+**check result**: tweet_output/ft1_hadoop.txt, tweet_output/unicode_count.txt 
 (for simplisity, we separate output1 to pure tweets and count), 
 tweet_output/ft2_hadoop.txt
 
@@ -154,7 +154,7 @@ minute) information after hadoop as source data; create an external table
 minute); dynamically partition bu selecting query from edge_source and insert 
 into edge.  
 
-Check result: (1) hive (2) select * from edge where minute=51; 
+**Check result**: (1) hive (2) select * from edge where minute=51; 
 
 
 
